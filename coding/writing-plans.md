@@ -54,6 +54,8 @@ Then write one section per atomic task:
 ```markdown
 ## Task 1 — [Deliverable]
 
+**Status:** `Not started`
+
 **Purpose:** [What becomes true after this task]
 
 **Files:**
@@ -72,6 +74,8 @@ Then write one section per atomic task:
 
 **Done when:** [Observable behavior and expected verification result.]
 ```
+
+Every task must have one status, initialized to `Not started`. During execution, the executor updates it when the task is complete or blocked. A status is a single short line—at most 20 words—not a progress essay. Use `Complete — <result and verification>`, `Blocked — <specific reason>`, or `Skipped — <approved reason>` as applicable.
 
 Use real paths, names, commands, expected outcomes, and edge cases discovered during investigation. Include code snippets only when they prevent a consequential ambiguity; otherwise describe the desired behavior precisely. Never leave placeholders such as “add validation,” “handle errors,” or “write tests” without saying what must be validated, how failure behaves, and which check proves it.
 

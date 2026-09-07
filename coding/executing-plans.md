@@ -24,7 +24,9 @@ For each task:
 3. Run the task's focused verification as soon as the change is ready.
 4. Investigate and fix failures caused by the task; do not mark it complete while its required verification fails.
 5. Review the diff for scope, interface consistency, and accidental changes.
-6. Record completion in the plan or task tracker when one is being used.
+6. Once every step and required verification for the task is complete, immediately update the task's status in the implementation plan before beginning the next task.
+
+Every task must have one status. Replace `Not started` with one concise factual update once the task is complete or blocked: `Complete — <result and verification>`, `Blocked — <specific reason>`, or `Skipped — <approved reason>`. Keep it to one line and at most 20 words; it provides execution context, not a narrative. Do not start the next task while the current task has an outdated or missing status.
 
 Do not begin a dependent task until its prerequisite's completion condition is met. Keep commits or checkpoints aligned with completed atomic tasks when the project workflow calls for them; do not create empty or cosmetic checkpoints.
 
