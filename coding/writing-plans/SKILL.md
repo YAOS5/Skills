@@ -19,6 +19,16 @@ Read the requirements or design and inspect the relevant repository areas. Ident
 
 Stay consistent with the repository's organization. Do not introduce a broad restructuring solely to make the plan look cleaner.
 
+Choose one canonical representation and name for each shared concept. Reuse it across internal boundaries unless a different shape or trust boundary requires separation. Do not introduce compatibility aliases without an identified existing consumer; name that consumer in the plan.
+
+## Agree Shared Contracts
+
+Before writing a plan that introduces or materially changes shared contracts, present a concise contract summary to the user. Use a compact table or field list showing what information exists, why it is needed, who consumes it, and whether it is required or optional. Distinguish explicit requirements from inferred fields, highlight unresolved alternatives, and recommend the minimal sufficient shape.
+
+Resolve material scope choices with the user before embedding the contracts in the plan. Reuse previously agreed contracts without requesting approval again. Leave routine naming, language syntax, and local implementation mechanics to engineering judgment.
+
+Record the agreed contracts once near the top of the plan, before the tasks, with canonical names, types, optionality, and required invariants. Reference them from the relevant tasks. The executor chooses implementation mechanics and surfaces necessary contract changes before introducing them.
+
 ## Make Tasks Atomic
 
 An atomic task is a coherent vertical slice that can be implemented, reviewed, and verified on its own. It is not simply a short action.
@@ -31,7 +41,9 @@ Every task must:
 - Depend only on completed tasks or on interfaces that the plan defines explicitly.
 - Be small enough for a reviewer to accept or reject without having to approve a neighboring task.
 
-Split tasks when they create independently testable behavior or when one can be meaningfully accepted while another is rejected. Combine steps that only make sense together, such as a schema field, its validation, and its focused test. Order tasks so each adds a stable foundation for the next; avoid plans that require partially implemented future work to test an earlier task.
+Prefer the earliest runnable path through the intended workflow, using injected fakes where necessary. Being independently unit-testable is not sufficient reason for a separate task. Introduce supporting types with their first consumer; justify foundation-only tasks.
+
+Split tasks when they deliver behavior that can be meaningfully accepted or rejected independently. Combine steps that only make sense together, such as a schema field, its validation, and its focused test. Avoid plans that require partially implemented future work to test an earlier task.
 
 ## Plan Format
 
@@ -84,6 +96,7 @@ Use real paths, names, commands, expected outcomes, and edge cases discovered du
 Check the completed plan against the source requirements:
 
 - Every requirement has a task or an explicit reason it is out of scope.
+- Every planned field, abstraction, and behavior has a requirement or concrete implementation need. Resolve permitted alternatives to one sufficient choice. Remove additions justified only by possible future use.
 - Every task satisfies the atomic-task criteria and can be tested at the point it appears.
 - Names, interfaces, paths, and task dependencies agree throughout.
 - Commands are plausible for this repository, and validation covers both the new behavior and meaningful regression risk.

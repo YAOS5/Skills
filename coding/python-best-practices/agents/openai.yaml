@@ -1,0 +1,4 @@
+interface:
+  display_name: "Python Best Practices"
+  short_description: "Python coding standards for this repo"
+  default_prompt: "Apply the Python best-practices skill when editing or reviewing Python code in this repository."
