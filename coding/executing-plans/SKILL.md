@@ -23,7 +23,7 @@ For each task:
 2. Make only the changes needed for that deliverable, following the plan and local conventions.
 3. Run the task's focused verification as soon as the change is ready.
 4. Investigate and fix failures caused by the task; do not mark it complete while its required verification fails.
-5. Review the diff for scope, interface consistency, and accidental changes.
+5. Review the diff for scope, interface consistency, and accidental changes. Check that implementation types preserve the agreed requiredness and invariants. For each added optional field, union variant, default, or fallback, identify the supported state or existing caller that requires it. Remove unsupported states and their branches and tests.
 6. Once the deliverable and required verification are complete, immediately update the task's status in the implementation plan.
 7. In Git repositories, create a local commit for the completed task before beginning the next task. Include its implementation, tests, documentation, and plan status update. Report the commit hash and a short description, then continue without waiting for approval.
 
@@ -33,7 +33,7 @@ Do not begin a dependent task until its prerequisite's completion condition is m
 
 ## Handle Deviations Explicitly
 
-Plans are guides, not permission to force an invalid approach through the codebase.
+Plans are guides, not permission to force an invalid approach through the codebase. Widening a contract is a contract change, not an implementation detail; justify it with concrete evidence before revising the plan.
 
 - **Small implementation detail differs:** choose the smallest change that preserves the plan's intent, document it, and verify it.
 - **A task exposes a missing edge case or an inaccurate assumption:** update the plan with a concrete, atomic correction before continuing.

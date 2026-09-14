@@ -15,7 +15,7 @@ Use this skill for any `*.py` change in this repository. Focus on readability, c
 - Use type hints on public functions and complex data structures; keep hints accurate and minimal.
 - Prefer `pathlib` over `os.path` for filesystem paths.
 - Use context managers (`with`) for files, locks, and resources.
-- Avoid mutable default arguments; use `None` and initialize inside the function.
+- Avoid mutable default arguments. Keep required arguments required. Use a `None` sentinel only when omission is supported behavior and should create a fresh value.
 - Do not shadow built-ins (`list`, `dict`, `id`, etc.).
 - Prefer f-strings for formatting.
 - Handle errors intentionally: catch specific exceptions and re-raise with useful context when needed.
