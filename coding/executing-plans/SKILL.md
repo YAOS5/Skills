@@ -11,7 +11,7 @@ Implement an approved plan faithfully while using engineering judgment to detect
 
 ## Preflight Review
 
-Read the entire plan and the referenced requirements or design. Inspect the current working state before changing it. Confirm that the plan's assumptions, file paths, interfaces, dependencies, and validation commands still fit the repository.
+Read the entire plan and the referenced requirements or design. Inspect the current working state before changing it. In Git repositories, record the starting revision and identify pre-existing staged and unstaged changes. Confirm that the plan's assumptions, file paths, interfaces, dependencies, and validation commands still fit the repository.
 
 Raise a question before starting if the plan has a critical gap, conflicts with current code, lacks required authority, or would make an irreversible or out-of-scope change. For a minor discrepancy with an obvious, behavior-preserving correction, record the adjustment and continue.
 
@@ -24,11 +24,12 @@ For each task:
 3. Run the task's focused verification as soon as the change is ready.
 4. Investigate and fix failures caused by the task; do not mark it complete while its required verification fails.
 5. Review the diff for scope, interface consistency, and accidental changes.
-6. Once every step and required verification for the task is complete, immediately update the task's status in the implementation plan before beginning the next task.
+6. Once the deliverable and required verification are complete, immediately update the task's status in the implementation plan.
+7. In Git repositories, create a local commit for the completed task before beginning the next task. Include its implementation, tests, documentation, and plan status update. Report the commit hash and a short description, then continue without waiting for approval.
 
 Every task must have one status. Replace `Not started` with one concise factual update once the task is complete or blocked: `Complete — <result and verification>`, `Blocked — <specific reason>`, or `Skipped — <approved reason>`. Keep it to one line and at most 20 words; it provides execution context, not a narrative. Do not start the next task while the current task has an outdated or missing status.
 
-Do not begin a dependent task until its prerequisite's completion condition is met. Keep commits or checkpoints aligned with completed atomic tasks when the project workflow calls for them; do not create empty or cosmetic checkpoints.
+Do not begin a dependent task until its prerequisite's completion condition is met. Commit at completed task boundaries, not on a timer; do not create empty, cosmetic, or incomplete checkpoints. Stage and commit only changes belonging to the task, preserving unrelated pre-existing staged and unstaged work. Do not push, amend, squash, or rewrite existing commits unless requested. If later verification exposes a defect in an earlier task, verify the correction and create a focused follow-up commit.
 
 ## Handle Deviations Explicitly
 
@@ -43,7 +44,7 @@ Never hide a skipped verification, failed check, or unimplemented requirement be
 
 ## Final Validation and Handoff
 
-After all tasks are complete, run the plan's final validation and any proportionate repository checks. Review the final diff against the goal and constraints, including compatibility, error behavior, documentation, and test coverage where applicable.
+After all tasks are complete, run the plan's final validation and any proportionate repository checks. Review the cumulative changes from the recorded starting revision, together with any remaining uncommitted changes, against the goal and constraints, including compatibility, error behavior, documentation, and test coverage where applicable. Distinguish task changes from pre-existing work; an empty working-tree diff does not replace this review.
 
 Report:
 

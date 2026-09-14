@@ -23,11 +23,13 @@ Choose one canonical representation and name for each shared concept. Reuse it a
 
 ## Agree Shared Contracts
 
-Before writing a plan that introduces or materially changes shared contracts, present a concise contract summary to the user. Use a compact table or field list showing what information exists, why it is needed, who consumes it, and whether it is required or optional. Distinguish explicit requirements from inferred fields, highlight unresolved alternatives, and recommend the minimal sufficient shape.
+After repository investigation, discuss any shared contracts that still require material choices in chat before writing the plan. Do not create or rewrite the implementation plan while those choices remain unresolved.
 
-Resolve material scope choices with the user before embedding the contracts in the plan. Reuse previously agreed contracts without requesting approval again. Leave routine naming, language syntax, and local implementation mechanics to engineering judgment.
+Discuss one contract at a time, starting with the most important or representative contract: the one that determines the core behavior or establishes a pattern for the others. Present a compact field list or table showing what information exists, why it is needed, who consumes it, and whether it is required or optional. Distinguish explicit requirements from inferred fields, highlight unresolved alternatives, and recommend the minimal sufficient shape. Do not present a batch of contracts for the user to review at once.
 
-Record the agreed contracts once near the top of the plan, before the tasks, with canonical names, types, optionality, and required invariants. Reference them from the relevant tasks. The executor chooses implementation mechanics and surfaces necessary contract changes before introducing them.
+End the turn and wait for the user's response. Resolve the current contract before moving to the next, carrying agreed decisions forward. Reuse contracts already settled by the conversation or supplied specification without requesting approval again; discuss only remaining material choices. Leave routine naming, language syntax, and local implementation mechanics to engineering judgment.
+
+Once the material contract choices are agreed, write the plan. Record the agreed contracts once near the top, before the tasks, with canonical names, types, optionality, and required invariants. Reference them from the relevant tasks. Later contract revisions should update affected sections and dependencies without automatically rewriting the entire plan. The executor chooses implementation mechanics and surfaces necessary contract changes before introducing them.
 
 ## Make Tasks Atomic
 
