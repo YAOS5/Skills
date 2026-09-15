@@ -65,6 +65,19 @@ Prescribe a sequence only when correctness or safe operation depends on it, and 
 
 File lists are evidence-based starting points, not exhaustive edit mandates. Distinguish required interface locations from likely implementation files. Keep concrete verification procedures, including agreed access, side effects, cleanup, and evidence requirements.
 
+## Review Implementation Complexity
+
+Review the design and shared contracts, not just task wording. For each proposed abstraction, optional field, fallback, validation, or recovery path, identify the current requirement or consumer that needs it. Remove anything justified only by hypothetical callers or future use. Perform this review while planning; do not simply add a checklist for the executor in place of simplifying the design.
+
+- Require dependencies needed by every supported execution path. Testability means supplying replacements, not adding missing-dependency fallbacks.
+- Give each resource one clear owner.
+- Validate external input at its boundary; internal consumers should rely on established contracts. Recheck state when it can change.
+- Return structured data only when an identified consumer needs it.
+- Catch exceptions only for a defined handling, boundary-translation, thread-transfer, or cleanup purpose.
+- Model genuine absence and failure states explicitly; do not remove necessary safeguards merely to reduce branches.
+
+Settle shared contract decisions that affect behavior or task dependencies. Leave local implementation mechanics to the executor when several approaches satisfy those contracts.
+
 ## Make Tasks Atomic
 
 An atomic task is a coherent vertical slice that can be implemented, reviewed, and verified on its own. It is not simply a short action.
@@ -150,10 +163,10 @@ Use real paths, names, commands, expected outcomes, and edge cases discovered du
 
 ## Review Before Handoff
 
-Check the completed plan against the source requirements:
+Check the completed plan against the source requirements. Ask: **What complexity does this plan introduce, and which requirement makes each part necessary?**
 
 - Every requirement has a task or an explicit reason it is out of scope.
-- Every planned field, abstraction, and behavior has a requirement or concrete implementation need. Resolve permitted alternatives to one sufficient choice. Remove additions justified only by possible future use.
+- Every planned field, abstraction, and behavior has a requirement or concrete implementation need. Resolve material shared-contract alternatives to one sufficient choice; leave local implementation mechanics to the executor. Remove additions justified only by possible future use.
 - Every task satisfies the atomic-task criteria and can be tested at the point it appears. It specifies an outcome and verification rather than routine coding steps; any prescribed sequence has a concrete correctness or safety reason.
 - Names, interfaces, paths, and task dependencies agree throughout. Each shared requirement and contract has one authoritative definition, and all agreed clarifications are already reflected in the design.
 - Commands are plausible for this repository, and validation covers both the new behavior and meaningful regression risk.
