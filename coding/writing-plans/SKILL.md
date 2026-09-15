@@ -11,7 +11,9 @@ Produce a plan that another capable engineer can execute without rediscovering t
 
 Do not plan an unconfirmed or materially ambiguous design. Resolve those questions first. If the request contains several independent deliverables, propose separate plans or a deliberately scoped first slice.
 
-Write the completed implementation plan to `docs/implementation plan/<slug>.md` in the repository that will be changed, unless the user specifies a different location. This written plan is the authoritative handoff; do not leave the plan only in chat.
+Default to one combined design and implementation document at `docs/spec/<slug>.md` in the repository that will be changed. When a spec is supplied, refine it in place and append or update its `## Implementation plan` section; preserve a user-specified location. If the confirmed design exists only in chat, record it in the design sections before adding tasks. This combined document is the authoritative handoff; do not leave the plan only in chat.
+
+Use a separate plan only when explicitly requested or when one specification supports multiple distinct implementation efforts. For that exception, use `docs/implementation plan/<slug>.md` unless directed otherwise, link to the authoritative spec sections, and keep shared constraints and contracts in the spec rather than copying them into the plan. Do not relocate or consolidate existing documents unless that is part of the requested work.
 
 ## Gather Evidence Before Decomposing
 
@@ -31,7 +33,37 @@ Model supported states only. For each optional field, state when absence is vali
 
 End the turn and wait for the user's response. Resolve the current contract before moving to the next, carrying agreed decisions forward. Reuse contracts already settled by the conversation or supplied specification without requesting approval again; discuss only remaining material choices. Leave routine naming, language syntax, and local implementation mechanics to engineering judgment.
 
-Once the material contract choices are agreed, write the plan. Record the agreed contracts once near the top, before the tasks, with canonical names, types, optionality, and required invariants. Reference them from the relevant tasks. Later contract revisions should update affected sections and dependencies without automatically rewriting the entire plan. The executor chooses implementation mechanics and surfaces necessary contract changes before introducing them.
+Once the material contract choices are agreed, refine the document's existing `## Shared contracts` section before writing tasks. Record canonical names, types, optionality, required invariants, error behavior, and side-effect ownership there once. Extend the design-level interfaces in place rather than adding another public-interface definition. Reference the named contracts from relevant tasks.
+
+Synchronize agreed behavior changes and clarifications into the relevant design sections before handing off the plan; never defer this synchronization to an implementation task. Update affected contracts and task dependencies without automatically rewriting the entire document. The executor chooses implementation mechanics and surfaces necessary contract changes before introducing them.
+
+## Agree End-to-End Verification Before Writing Tasks
+
+Unit tests are required for implemented behavior; they do not replace verification of the integrated feature. Before creating or rewriting implementation tasks, discuss with the user how the feature will be verified beyond unit tests. Inspect existing integration tests, launchers, environment configuration, and supplied instructions first so the recommendation is concrete.
+
+Recommend a representative path through the actual application and its real dependencies, including API endpoints where relevant. Explain what it will prove and what it cannot prove. A successful endpoint request alone does not establish that the application's end-to-end workflow works. For a feature with no external service, propose an appropriate integrated local or user-facing check instead.
+
+Discuss one material verification decision at a time and wait for the user's response before proceeding with dependent planning. Start with the proposed scenario and environment, then resolve any missing access, permitted side effects, and success evidence. Reuse verification choices and authorization already supplied by the user; do not ask for them again. If the user explicitly asks to skip discussion, proceed with clearly stated assumptions and unresolved execution prerequisites rather than inventing access or authorization.
+
+Agree the following where relevant, using repository evidence rather than asking the user to repeat known details:
+
+- **Scenario and environment:** the normal entrypoint/user flow, real services and endpoints, sandbox/staging/production choice, test data, and any required timing or external state.
+- **Access and instructions:** which credentials, account permissions, environment setup, and user-provided procedures the executor needs. Invite the user to supply missing setup instructions or provision credentials through the existing secret mechanism. Record credential locations, environment-variable names, or retrieval instructions in the plan, never secret values; do not request secrets be pasted into chat or committed files.
+- **Permitted actions:** what reads and writes the check may perform, relevant limits or costs, and cleanup when needed. Record the scope of existing authorization so the executor need not ask again. Access to credentials alone does not authorize unrelated mutations, and planning must not perform external writes merely to design a check.
+- **Pass/fail evidence:** the expected application outcome and independent service-side observation where available, including asynchronous completion, time bounds, and meaningful failure cases. Distinguish authentication/connectivity, request acceptance, and completed behavior; name which acceptance criteria each check actually proves.
+- **Unavailable checks:** agree how missing credentials, environment availability, or an unobservable outcome will be handled. Identify the prerequisite and who supplies it. Fakes can supplement coverage but cannot silently substitute for the agreed real integration check.
+
+Settle the verification approach before writing tasks; credentials themselves may be provisioned later under an explicit setup step. Do not leave a generic “ask the user how to test” or “run an integration check” for the executor. Record the agreed procedure once under `### Final verification`, with concrete commands or user actions, access/setup references, permitted effects, expected evidence, and completion conditions. Reference it from the tasks that enable it, and put earlier focused integration checks with their first runnable task.
+
+Require the executor to record what was actually run, the observed result, and remaining gaps without exposing secrets. An unavailable required check remains blocked or unverified; passing unit tests does not make it complete. An explicitly agreed deferral must state the evidence gap and must not be described as end-to-end verification success.
+
+## Plan Outcomes, Not Coding Instructions
+
+Assume a capable implementer. Define each task's outcome, likely affected files, dependencies, verification, and completion condition. Leave routine coding steps and local implementation mechanics to the executor.
+
+Prescribe a sequence only when correctness or safe operation depends on it, and explain why the order matters. Keep shared constraints and ordering invariants in the design or shared contracts and reference them from tasks. Do not turn removed task steps into an implementation recipe elsewhere in the document.
+
+File lists are evidence-based starting points, not exhaustive edit mandates. Distinguish required interface locations from likely implementation files. Keep concrete verification procedures, including agreed access, side effects, cleanup, and evidence requirements.
 
 ## Make Tasks Atomic
 
@@ -51,45 +83,66 @@ Split tasks when they deliver behavior that can be meaningfully accepted or reje
 
 ## Plan Format
 
-Create the plan at the required location, then start it with:
+Keep the design and shared contracts ahead of implementation tasks, using strong headings:
 
 ```markdown
-# [Change] Implementation Plan
+# [Change]
 
-**Goal:** [One sentence describing the outcome]
+## Outcome and approach
+## Scope and constraints
+## Behavior and failure handling
+## Shared contracts
+### [Named interface or data contract]
+## Acceptance criteria
+## Assumptions and unresolved decisions
 
-**Approach:** [Brief description of the selected design]
-
-**Constraints:** [Only requirements that apply across tasks]
-
-**Validation:** [The final test, build, lint, or manual checks]
+## Implementation plan
+### Execution guidance
+### Task 1 — [Deliverable]
+### Final verification
 ```
 
-Then write one section per atomic task:
+Reuse existing equivalent sections where they are clear; do not churn headings just to match the example. Each requirement and shared contract has one authoritative definition:
+
+- Keep the outcome, approach, scope, and cross-task constraints in the design; do not repeat them in a plan preamble.
+- Keep component ownership in the design and likely affected files in tasks; mark a path as required only when an existing interface or explicit requirement fixes its location.
+- Keep acceptance criteria as observable outcomes; task checks and final verification explain how to prove them. Reference criteria with stable names or identifiers.
+- Maintain one assumptions/unresolved-decisions section rather than a second planning list. Material design decisions must be resolved before task planning.
+
+Under execution guidance, tell the implementer to read the design and shared contracts before starting, then read the current task and its dependencies. After context loss or relevant document changes, reread the applicable shared sections. Tasks need not reproduce the entire spec to stand alone. Include only execution-specific instructions here.
+
+Write one subsection per atomic task:
 
 ```markdown
-## Task 1 — [Deliverable]
+### Task 1 — [Deliverable]
 
 **Status:** `Not started`
 
 **Purpose:** [What becomes true after this task]
 
-**Files:**
+**Likely files:**
+
 - Create: `path/to/new-file`
 - Modify: `path/to/existing-file` — [specific responsibility]
 - Test: `path/to/test-file`
 
 **Dependencies and contract:**
-- Requires: [earlier task or existing interface]
-- Provides: [exact exported behavior, data shape, or UI contract]
 
-**Steps:**
-1. [Concrete edit or test action, including relevant names or behavior.]
-2. [Next concrete action.]
-3. Run: `[exact command]`.
+- Requires: [earlier task or existing interface; link to named shared contracts]
+- Provides: [behavior or contract made operational by this task; reference its definition]
 
-**Done when:** [Observable behavior and expected verification result.]
+**Verification:**
+
+- [Observable behavior and meaningful failure cases to verify; reference shared contracts.]
+- Run: `[task-specific command]`.
+- [Reference any agreed integration check to perform during this task.]
+
+**Done when:** [Observable behavior, relevant acceptance criteria, and expected verification result.]
 ```
+
+Put the agreed end-to-end verification procedure and final regression, build, lint, or manual checks under `### Final verification`. Keep task-specific runnable checks with their tasks. Explicitly testing a critical safeguard is useful evidence coverage, not a second policy definition; avoid copying whole constraints or contracts into task prose.
+
+For an intentionally separate plan, use an implementation-plan title, source-spec links and execution guidance, then the same task and final-verification structure at appropriate heading levels.
 
 Every task must have one status, initialized to `Not started`. During execution, the executor updates it when the task is complete or blocked. A status is a single short line—at most 20 words—not a progress essay. Use `Complete — <result and verification>`, `Blocked — <specific reason>`, or `Skipped — <approved reason>` as applicable.
 
@@ -101,9 +154,10 @@ Check the completed plan against the source requirements:
 
 - Every requirement has a task or an explicit reason it is out of scope.
 - Every planned field, abstraction, and behavior has a requirement or concrete implementation need. Resolve permitted alternatives to one sufficient choice. Remove additions justified only by possible future use.
-- Every task satisfies the atomic-task criteria and can be tested at the point it appears.
-- Names, interfaces, paths, and task dependencies agree throughout.
+- Every task satisfies the atomic-task criteria and can be tested at the point it appears. It specifies an outcome and verification rather than routine coding steps; any prescribed sequence has a concrete correctness or safety reason.
+- Names, interfaces, paths, and task dependencies agree throughout. Each shared requirement and contract has one authoritative definition, and all agreed clarifications are already reflected in the design.
 - Commands are plausible for this repository, and validation covers both the new behavior and meaningful regression risk.
+- Verification beyond unit tests was discussed or already settled by the user (or discussion was explicitly declined). The plan identifies the actual integrated scenario, access/setup instructions, permitted actions, pass/fail evidence, and handling of unavailable checks; it does not defer designing verification to execution.
 - No task relies on vague follow-up work or unspecified decisions.
 
-Correct gaps in the plan before handing it off. State the plan location, the sequence of tasks, and any remaining assumptions or user decisions required before execution.
+Correct gaps in the plan before handing it off. State the combined document location (or explicit separate-plan location), the sequence of tasks, and any remaining execution assumptions or prerequisites. Do not hand off material design decisions as implementation assumptions.

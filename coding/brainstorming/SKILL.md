@@ -7,7 +7,7 @@ description: Shape an ambiguous product, feature, or behavior-change request int
 
 ## Purpose
 
-Turn an initial idea into a decision-ready design and record it as a durable specification. For work that may be implemented, the required outcome is a self-contained spec at `docs/spec/<slug>.md` in the repository the work will change. Do not leave an agreed design only in chat.
+Turn an initial idea into a decision-ready design and record it as a durable specification. For work that may be implemented, the required outcome is a self-contained spec at `docs/spec/<slug>.md` in the repository the work will change. This document will also hold the implementation plan when planning begins. Do not leave an agreed design only in chat.
 
 An explicitly answer-only feasibility investigation may end with a recommendation instead of a spec. Any request that proceeds toward a change must produce the spec before implementation planning begins.
 
@@ -81,6 +81,28 @@ Before substantial implementation, confirm that the proposed outcome and scope a
 - Prefer a design that can be tested at its boundaries and understood without reading every implementation detail.
 - Resolve ambiguity in writing rather than leaving important decisions for an implementer to guess.
 
+## Document Structure and Ownership
+
+Use clear, descriptive headings so an implementer can read the shared design once and then retrieve the relevant contract or task. Default to this structure, scaling the content to the work:
+
+```markdown
+# [Change]
+
+## Outcome and approach
+## Scope and constraints
+## Behavior and failure handling
+## Shared contracts
+### [Named interface or data contract]
+## Acceptance criteria
+## Assumptions and unresolved decisions
+```
+
+Give each requirement and shared contract one authoritative definition. Describe component responsibilities and ownership in the design; leave exhaustive file/edit inventories to implementation tasks. Acceptance criteria state what must be true; planning adds the concrete checks that prove it.
+
+Brainstorming establishes interface responsibilities, observable behavior, and material invariants. Specify exact types or signatures when they affect a design decision; otherwise leave that precision for planning to add within the same shared-contract section. Do not create a second public-interface definition elsewhere in the document.
+
+The writing-plans stage refines these sections in place and appends `## Implementation plan`. Agreed design clarifications must update their authoritative sections before planning handoff. Do not generate implementation tasks during brainstorming or add an empty plan merely as a placeholder. When revising a document that already contains tasks, preserve them and identify dependencies affected by the design change.
+
 ## Handoff
 
-For every implementation-bound request, finish by writing the approved, self-contained design spec to `docs/spec/<slug>.md` in the repository that contains the affected work. Report that path and use the spec as the source for the atomic implementation plan. A feasibility finding may end with a recommendation only when the user explicitly asked for investigation rather than a change.
+For every implementation-bound request, finish by writing the approved, self-contained design spec to `docs/spec/<slug>.md` in the repository that contains the affected work. Report that path and hand off the same document for an atomic implementation plan to be appended. Default to one combined document; use separate plans only when explicitly requested or when one specification supports multiple distinct implementation efforts. In that case, keep shared design and contracts authoritative in the spec and link to them from each plan. A feasibility finding may end with a recommendation only when the user explicitly asked for investigation rather than a change.
