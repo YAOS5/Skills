@@ -34,9 +34,19 @@ Do not make the user repeat facts the project already supplies. Ask only questio
 
 ## Interview the Decision, Not the User
 
-Use an interactive interview whenever the user asks to be interviewed, challenged, or helped to uncover blind spots, or when a consequential design choice remains unresolved after examining the available evidence. This is part of brainstorming, not a separate workflow; never pursue a predetermined number of questions.
+Proactively uncover consequential behavioral choices through an interactive interview. Do not wait for the user to request a blind-spot pass or for an ambiguity to announce itself. This is part of brainstorming, not a separate workflow; never pursue a predetermined number of questions.
 
-Before asking, investigate what the repository, supplied references, and stated constraints can answer. Treat an existing implementation, design, or library named by the user as the default behavioral reference. Ask about a deviation only when it is intentional or necessary. Never ask a broad “what do you mean?” question when the project context can narrow it first.
+Before asking, investigate what the repository, supplied references, and stated constraints can answer. Treat an existing implementation, design, or library named by the user as the default behavioral reference, while examining how the proposed change interacts with it. Never ask a broad “what do you mean?” question when the project context can narrow it first.
+
+Before settling the design, walk through a concrete scenario from trigger to outcome and actively look for choices hidden in the proposed flow:
+
+- What runs first, what information is available at each decision, and whether a different order changes the outcome.
+- What gates, skips, or ends work; whether taking one action prevents another; and what happens when multiple actions are eligible.
+- What happens when a step fails, returns no result, or only partly succeeds: whether later work continues, retries, or stops.
+
+Use these prompts to discover relevant decisions, not as a questionnaire to recite. For each consequential choice the user has not settled, explain the concrete consequence and ask one question before adopting it, even when one option seems natural. For example: “With one decision call, putting the close decision before analysis means this iteration cannot consider entry. Should taking a close action end the iteration?” Keep routine implementation mechanics with the agent.
+
+After each answer, trace its consequences through the scenario again: an answer about call count, ordering, or failure handling may expose another decision. Resolve those consequences before synthesizing the design; a general request to simplify a flow does not settle which work may be skipped.
 
 Ask questions in the order that unlocks the next decision:
 
@@ -48,7 +58,7 @@ Ask questions in the order that unlocks the next decision:
 6. Define how the result will be proved to work.
 7. Look for a concrete way to reduce scope or complexity before synthesizing the design.
 
-Skip any question the evidence already answers. End the interview as soon as the remaining design can be stated and validated without guessing; do not continue merely to make the process feel thorough.
+Skip questions already settled by the user's instructions or agreed behavior. Repository evidence should narrow questions, but the fact that a flow is implementable does not settle whether its behavioral consequences are wanted. End the interview when the scenario walkthrough exposes no remaining consequential choices that require guessing; do not continue merely to make the process feel thorough.
 
 **Ask exactly one question per turn.** That question must address the single most important unresolved decision. After asking it, stop and wait for the user's answer; do not combine it with a follow-up question, a questionnaire, or a list of decisions for the user to answer at once. Once the answer resolves that decision, incorporate it into the working understanding, identify the next highest-value unresolved decision, and ask that next question in a new turn. If the answer does not resolve the current decision, clarify the same decision before moving on.
 
