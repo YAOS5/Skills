@@ -93,25 +93,27 @@ Before substantial implementation, confirm that the proposed outcome and scope a
 
 ## Document Structure and Ownership
 
-Use clear, descriptive headings so an implementer can read the shared design once and then retrieve the relevant contract or task. Default to this structure, scaling the content to the work:
+Require the necessary information, not a fixed set of headings. Use clear headings scaled to the work; a compact design can use:
 
 ```markdown
 # [Change]
 
-## Outcome and approach
-## Scope and constraints
-## Behavior and failure handling
-## Shared contracts
-### [Named interface or data contract]
+## Outcome and scope
+## Behavior and contracts
 ## Acceptance criteria
-## Assumptions and unresolved decisions
 ```
 
-Give each requirement and shared contract one authoritative definition. Describe component responsibilities and ownership in the design; leave exhaustive file/edit inventories to implementation tasks. Acceptance criteria state what must be true; planning adds the concrete checks that prove it.
+Separate approach, constraints, or shared contracts only when doing so makes substantial content easier to retrieve. Put failure behavior beside the behavior it qualifies. Include assumptions or unresolved decisions only when material ones remain; incorporate settled decisions into their authoritative sections.
 
-Brainstorming establishes interface responsibilities, observable behavior, and material invariants. Specify exact types or signatures when they affect a design decision; otherwise leave that precision for planning to add within the same shared-contract section. Do not create a second public-interface definition elsewhere in the document.
+Treat the document as the current implementation contract, not a record of the design conversation. Each planning pass may consolidate existing prose while preserving agreed requirements. Include only information needed to determine behavior, boundaries, interfaces, work sequence, or verification. Omit empty sections, settled-decision history, generic execution advice, and repeated summaries.
 
-The writing-plans stage refines these sections in place and appends `## Implementation plan`. Agreed design clarifications must update their authoritative sections before planning handoff. Do not generate implementation tasks during brainstorming or add an empty plan merely as a placeholder. When revising a document that already contains tasks, preserve them and identify dependencies affected by the design change.
+Give each requirement and shared contract one authoritative definition. Describe component responsibilities and ownership in the design; leave file/edit inventories to implementation tasks. Keep acceptance criteria as a short checklist of observable outcomes, referencing detailed behavior instead of repeating its edge cases. Record the validation approach briefly; planning adds the concrete checks that prove it.
+
+Brainstorming establishes interface responsibilities, observable behavior, and material invariants. Specify exact types or signatures when they affect a design decision; otherwise leave that precision for planning to add in place. Do not create a second public-interface definition elsewhere in the document.
+
+The writing-plans stage consolidates these sections before appending or updating `## Implementation plan`. Agreed clarifications replace or refine their authoritative definitions rather than accumulating addenda. Do not generate implementation tasks during brainstorming or add an empty plan as a placeholder. When revising a document that already contains tasks, preserve their deliverables and status and identify affected dependencies; their wording may be consolidated without losing requirements.
+
+Before handoff, review every paragraph: **What implementation decision or verification action would become ambiguous if this disappeared?** Delete or merge paragraphs with no answer. Preserve critical safeguards explicitly, defining their behavior once. Do not use a hard word limit to remove necessary detail.
 
 ## Handoff
 
